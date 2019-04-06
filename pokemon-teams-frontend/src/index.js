@@ -41,7 +41,7 @@ function renderPokemon(obj) {
   return output
 }
 
-//Add and Delete Pokemon
+//Add and Delete Pokemons 
 function addPokemon(e) {
   //Add pokemon to trainer
   if (e.target.className === 'add-button') {
