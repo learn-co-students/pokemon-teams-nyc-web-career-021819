@@ -6,7 +6,7 @@ trainers at Flatiron School. Through their journey,
 team**. If they want to add another Pokemon, they must
 release one of their Pokemon first.
 
-![Showing how the application runs from loading, adding Pokemon to a team and also releasing one](/pokemon-teams-frontend/assets/pokemon_teams.gif)
+![Showing how the application runs from loading, adding Pokemon to a team and also releasing one](git clone )
 
 ## Requirements
 - When a user loads the page, they should see all
@@ -35,7 +35,7 @@ A Pokemon Card can be placed within the `<main>` tags.
 ```
 
 ## API
-We are going to be using a Rails backend to support our requests. In order to have this working, 
+We are going to be using a Rails backend to support our requests. In order to have this working,
 you want to make sure you go to your Terminal and run the following code below:
 
     $ cd pokemon-teams-backend # Change into the directory
