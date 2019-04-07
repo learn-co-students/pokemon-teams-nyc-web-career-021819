@@ -3,8 +3,6 @@ const TRAINERS_URL = `${BASE_URL}/trainers`
 const POKEMONS_URL = `${BASE_URL}/pokemons`
 
 document.addEventListener('DOMContentLoaded', function() {
-    const main = document.querySelector('main')
-
     // Get Trainers
     fetch(TRAINERS_URL)
     .then(function(response){
