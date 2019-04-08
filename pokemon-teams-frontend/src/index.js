@@ -2,9 +2,6 @@ const BASE_URL = "http://localhost:3000"
 const TRAINERS_URL = `${BASE_URL}/trainers`
 const POKEMONS_URL = `${BASE_URL}/pokemons`
 
-//create card elements
-//append cards to <main>
-
 document.addEventListener('DOMContentLoaded', function () {
 
   const fetch_and_render_trainers = function() {
@@ -26,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
   button = document.querySelector
 
   const create_trainer_card = function (trainer) {
-    //need trainer id
     div = document.createElement("div")
     div.className = "card"
     div.dataset.id = trainer.id
@@ -47,24 +43,24 @@ document.addEventListener('DOMContentLoaded', function () {
     return div
   }
 
-  const render_trainercard = function (node) {
-    main.appendChild(node)
+  const render_trainercard = function (parent, node) {
+    parent.appendChild(node)
   }
 
 
   const trainercard_lis = function (pokemon) {
     li = document.createElement("li")
+    li.dataset.li_pokemonid=`${pokemon.id}`
     li.innerHTML = `
-
-    <li> ${pokemon.nickname} (${pokemon.species})
-    <button class="release" data-action="release" data-pokemon-id=${pokemon.id}> Release </button></li>`
+    ${pokemon.nickname} (${pokemon.species})
+    <button class="release" data-action="release" data-pokemon-id=${pokemon.id}> Release </button>`
     return li
   }
 
   const render_all_trainer_cards = function (trainers) {
     trainers.map(function (trainer) {
       trainer_card = create_trainer_card(trainer)
-      render_trainercard(trainer_card)
+      render_trainercard(main, trainer_card)
         trainer["pokemons"].map(function (pokemon) {
           lis = trainercard_lis(pokemon)
           trainer_card.querySelector("ul").appendChild(lis)
@@ -79,9 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (trainer.pokemons.length < 6) {
       create_pokemon()
-
     }
   }
+
+  //refactor feth_and_render_trainers to append li to parent whenever a post request is made
+  //to create a new pokemon
 
   const create_pokemon = function () {
     return fetch(POKEMONS_URL, {
@@ -91,23 +89,33 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       body: JSON.stringify({'trainer_id': parseInt(trainer_id)})
     })
-    .then(function () {
-      fetch_and_render_trainers()
+    .then(function (response) {
+        return response.json()
     })
-  }
-  const release_pokemon = function () {
-    return fetch(`${POKEMONS_URL}/${parseInt(pokemon_id)}`, {
-      method: "DELETE"
-      // headers: {
-      //   "Content-Type": "application/json"
-      // },
-      // body: JSON.stringify({'trainer_id': parseInt(trainer_id)})
-    })
-    .then(function () {
-      fetch_and_render_trainers()
+    .then(function (response){
+      console.log(`"[data-id='${response.trainer_id}']"`)
+      card_select = `"[data-id='${response.trainer_id}']"`
+      trainerid = parseInt(response.trainer_id)
+      div = document.querySelector(`[data-id='${response.trainer_id}']`)
+      new_li = trainercard_lis(response)
+      render_trainercard(div.lastChild, new_li)
     })
   }
 
+
+  const release_pokemon = function () {
+    return fetch(`${POKEMONS_URL}/${parseInt(pokemon_id)}`, {
+      method: "DELETE"
+    })
+    .then(function (response) {
+      return response.json()
+    })
+    .then(function (response){
+      trainerid = response.trainer_id
+      li = document.querySelector(`[data-li_pokemonid='${response.id}']`)
+      li.remove()
+    })
+  }
 
   const fetch_trainers = function () {
     fetch(TRAINERS_URL)
@@ -122,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
   fetch_and_render_trainers()
 
   main.addEventListener('click', function(e){
-
     console.log('target', e.target.dataset)
     if (e.target.dataset.action === "add") {
       trainer_id = e.target.dataset.id
@@ -134,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
       pokemon_id = e.target.dataset.pokemonId
       release_pokemon()
     }
-
   })
 
 })
